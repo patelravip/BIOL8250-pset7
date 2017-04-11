@@ -1,0 +1,111 @@
+---
+title: 'Problem set #7'
+author: "Ravi Patel"
+date: "4/11/2017"
+output: pdf_document
+---
+
+```{r setup, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(warn=-1)
+```
+
+## 1) Download and install RStudio. Open it up. Play around. Try some syntax you know from Python. Does it work? If not, see if you can figure out how to do it in R.  In particular:
+### a) Figure out how to get the length of a vector or list
+```{r}
+exampleVector = c(1,2,3,4,5)
+length(exampleVector)
+```
+### b) Figure out the equivalent of range(a,b) from Python
+Lets create a range from 2 to 11 in two different ways
+```{r}
+## Using the colon operator
+2:11 
+## Using 'seq' function
+seq(from=2, to=11, by=1) 
+```
+### c) Figure out how to initialize a vector of all 0s
+```{r}
+vectorLength = 15
+zeroVector = numeric(vectorLength)
+```
+```{r, echo=FALSE}
+zeroVector
+```
+
+\newpage
+
+## 2) Get used to working with vectorized objects
+### a) Make two vectors, v1 = c(3,6,7,3,1) and v2 = c(6,3,0,6,1)
+```{r}
+v1 = c(3,6,7,3,1)
+v2 = c(6,3,0,6,1)
+```
+### b) What do you expect the outcome of v1 + v2, v1 * v2, v1 – v2, and v1/v2 will be? Does something go wrong with one of them?
+I expect that each operation will be performed element-wise:  
+v1 + v2 = 9 9 7 9 2
+```{r}
+v1 + v2
+```
+v1 * v2 = 18 18 0 18 1
+```{r}
+v1 * v2
+```
+v1 - v2 = -3 3 7 -3 0
+```{r}
+v1 - v2
+```
+v1 / v2 = 0.5 2 Inf 0.5 1
+```{r}
+v1 / v2
+```
+It doesn't seem that anything went wrong. Interestingly, a divide-by-zero returns Inf.
+
+### c) Try some other mathematical operations, like exponentiation, square root, log, etc. Do you get the kind of result you expect?
+```{r}
+# Exponentiation
+v1^2
+# Square root
+sqrt(v1)
+# Log
+log(v1)
+```
+Results are as expected: operations are performed element-wise on a vector.
+
+\newpage
+
+## 3) R is very good at doing matrix operations, like matrix multiplication. The operator for matrix multiplication is \%\*\% (yes, including the percent signs).
+### a) Reach way back, and try to remember matrix multiplication. Maybe look it up on Wikipedia. Predict what you should get if you do v1 \%\*\% v2. Now try it. Do you get it?
+Since v1 and v2 are vectors, the matrix multiplication is the sum of element-wise multiplication. The result should be 55.
+```{r}
+v1 %*% v2
+```
+### b) Figure out how to make a matrix in R. Create a matrix m with 2 rows and 2 columns, first row is 3, 6; second row is 7, 1. Also create a vector v = c(3,1).
+```{r}
+m = matrix(c(3,6, 7,1), nrow=2, ncol=2, byrow=TRUE)
+```
+```{r, echo=FALSE}
+m
+```
+```{r}
+v = c(3,1)
+```
+```{r, echo=FALSE}
+v
+```
+### c) What should you get for m\%\*\%v? How about v\%\*\%m? Do it and seeif you’re right!
+For m\%\*\%v, we should get:  
+```{r, echo=FALSE}
+matrix(c(15, 22), nrow=2, ncol=1, byrow=TRUE)
+```
+```{r}
+m%*%v
+```
+  
+For v\%\*\%m, we should get:
+```{r, echo=FALSE}
+matrix(c(16,19), nrow=1, ncol=2)
+```
+```{r}
+v%*%m
+```
