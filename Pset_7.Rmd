@@ -8,6 +8,7 @@ output: pdf_document
 ```{r setup, echo=FALSE, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(warn=-1)
+library(data.table)
 ```
 
 ## 1) Download and install RStudio. Open it up. Play around. Try some syntax you know from Python. Does it work? If not, see if you can figure out how to do it in R.  In particular:
@@ -109,3 +110,32 @@ matrix(c(16,19), nrow=1, ncol=2)
 ```{r}
 v%*%m
 ```
+
+\newpage
+
+## 4) Let’s learn how to data.table.
+### c) Read the resulting table in R using fread.
+```{r}
+yeast = fread("yeast_results.txt")
+```
+### d) Using data.table syntax, compute the log fold change of every gene in ONE LINE. NB: log fold-change means log2(BY_expression/RM_expression) i.e. how many factors of 2 you need to get from the RM expression level to the BY expression level.
+```{r}
+logFoldChange = log2(yeast[,by_count]/yeast[,rm_count])
+head(logFoldChange, n=20)
+```
+### e) In part d, you probably got a ton of NA values. Why? Using data.table syntax, filter out the “bad” rows, and redo part d. This should take ONE LINE
+```{r}
+cleanLogFoldChange = log2(yeast[rm_count != 0][,by_count]/yeast[rm_count != 0][,rm_count])
+head(cleanLogFoldChange, n=20)
+```
+### f) Another option to solve the NAs in part d is to have pseudo-counts. A pseudo-count is simply a phony observation of exactly one extra read per gene. Using data.table syntax, add pseudo-counts to every gene. This should take ONE line
+```{r}
+pseudoYeast = yeast[, .(gene_name=gene_name, gene_length=gene_length, rm_pseudo=rm_count+1,by_pseudo=by_count+1)]
+```
+### g) Re-compute log-fold change using the pseudo-counted data. ONE line.
+```{r}
+pseudoLogFoldChange = log2(pseudoYeast[,by_pseudo]/pseudoYeast[,rm_pseudo])
+head(pseudoLogFoldChange, n=20)
+```
+### h) So far, we’ve been working with raw counts, not FPKM. Using ONE line, compute the FPKM values for every gene. 
+### i) Finally, compute the log fold change of the FPKM values. How does it compare to the FPKM of the counts?
